@@ -1,42 +1,45 @@
 const express = require("express");
 const app = express();
-const cors = require("cors");
-const PORT = process.env.PORT || 5000;
 require("dotenv").config();
+const port = process.env.PORT || 5000;
+const cors = require("cors");
 const connectDb = require("./connection");
 const Todo = require("./models/model");
+const { get } = require("mongoose");
 
 connectDb();
 
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 
 app.post("/post-todo", async (req, res) => {
+  const { title, description } = req.body;
   let todo = new Todo({
-    title: req.body.title,
-    description: req.body.description,
+    title,
+    description,
   });
   await todo.save();
-  res.status(200).json({ message: "Todo added successfully", todo });
+  res.status(200).json({ message: "Todo saved successfully", todo });
 });
 
 app.get("/get-todos", async (req, res) => {
-  let todos = await Todo.find();
-
-  if (!todos) {
+  let todo = await Todo.find();
+  if (!todo) {
     res.status(400).json({ message: "No todos found" });
+  } else {
+    res.status(200).json({ todo });
   }
-  res.status(200).json({ todos });
 });
 
 app.delete("/delete-todo/:id", async (req, res) => {
   let todo = await Todo.findByIdAndDelete(req.params.id);
   if (!todo) {
-    res.status(400).json({ message: "Todo not found" });
+    res.status(400).json({ message: "No todo found" });
+  } else {
+    res.status(200).json({ message: "Todo deleted successfully" });
   }
-  res.status(200).json({ message: "Todo deleted successfully", todo });
 });
 
-app.listen(PORT, () => {
-  console.log(`server is running on port ${PORT}`);
+app.listen(port, () => {
+  console.log(`Server is running on port: ${port}`);
 });

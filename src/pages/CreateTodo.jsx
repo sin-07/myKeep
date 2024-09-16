@@ -1,39 +1,30 @@
-
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import toast,{Toaster} from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 const CreateTodo = () => {
-  const navigate = useNavigate();
-
   const postTodo = async (e) => {
     e.preventDefault();
     const title = e.target.title.value;
     const description = e.target.description.value;
 
-    let response = await fetch("http://localhost:5000/post-todo", {
+    const res = await fetch("http://localhost:5000/post-todo", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ title, description }),
     });
-
-    if (response.status === 200) {
-      toast.success("Todo added successfully");
-      e.target.title.value = "";
-      e.target.description.value = "";
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
+    if (res.status === 200) {
+      toast.success("Todo saved successfully");
     } else {
-      toast.error("Todo not added");
+      toast.error("Something went wrong");
     }
   };
 
   return (
     <>
-    <Toaster/>
+      <Toaster />
       <div className="md:w-[80vw] md:px-0 px-1 w-full mx-auto bg-slate-300 flex justify-center items-center">
         <form
           action=""
@@ -65,7 +56,9 @@ const CreateTodo = () => {
             ></textarea>
           </div>
           <div className="mb-2">
-            <button className="bg-blue-300 w-full py-2 rounded-tr-3xl hover:bg-blue-400 transition-all duration-500">Submit</button>
+            <button className="bg-blue-300 w-full py-2 rounded-tr-3xl hover:bg-blue-400 transition-all duration-500">
+              Submit
+            </button>
           </div>
         </form>
       </div>
