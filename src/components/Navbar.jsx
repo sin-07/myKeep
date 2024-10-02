@@ -12,6 +12,9 @@ const Navbar = () => {
             <li>
                 <Link to="create">Create TODO</Link>
             </li>
+<li>
+                <Link to="create">delete TODO</Link>
+            </li>
         </ul>
         </div>   
     </>
